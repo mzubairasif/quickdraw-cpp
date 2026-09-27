@@ -6,7 +6,7 @@ private:
 
 public:
     // 1. Constructors & Destructor (Memory Management)
-    Matrix(int rows, int cols); 
+    Matrix(int r, int c); 
     ~Matrix(); // Required to free float* data
 
     // 2. Rule of Three (Prevents shallow-copy crashes)
