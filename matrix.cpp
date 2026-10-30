@@ -80,29 +80,124 @@ void Matrix::print() const
 }
 
 Matrix Matrix::multiply(const Matrix& other) const {
-    throw std::logic_error("multiply not implemented yet");
+    // 1. Validation Check 
+    if (this->cols != other.rows) {
+        throw std::invalid_argument("Matrix multiply error: Inner dimensions do not match.");
+    }
+
+    Matrix new_matrix(this->rows, other.cols);
+    for (int i = 0; i < this->rows; i++) {
+        for (int j = 0; j < other.cols; j++) {
+            float k_value = 0.0f; // Fixed: Must be float
+            
+            for (int k = 0; k < this->cols; k++) {
+                k_value += this->data[(i * this->cols) + k] * other.data[(k * other.cols) + j];
+            }
+            
+            new_matrix.data[(i * other.cols) + j] = k_value;
+        }
+    }
+    
+    return new_matrix;
 }
 
 Matrix Matrix::transpose() const {
-    throw std::logic_error("transpose not implemented yet");
+    // a new matrix with swapped dimensions
+    Matrix new_matrix(this->cols, this->rows);
+    
+    // Loop through the original matrix
+    for (int i = 0; i < this->rows; i++) {
+        for (int j = 0; j < this->cols; j++) {
+            // Mapping the 1D indices
+            // Original index at (i, j)
+            int orig_index = (i * this->cols) + j;
+            
+            // Transposed index at (j, i) 
+            // Note that new matrix has 'this->rows' as its column count
+            int trans_index = (j * this->rows) + i;
+            
+            // Assign the value
+            new_matrix.data[trans_index] = this->data[orig_index];
+        }
+    }
+    
+    return new_matrix;
 }
 
 Matrix Matrix::elementwise_multiply(const Matrix& other) const {
-    throw std::logic_error("elementwise_multiply not implemented yet");
+    if (this->cols != other.cols || this->rows != other.rows) {
+        throw std::invalid_argument("Matrix multiply error: Dimensions do not match.");
+    }
+    Matrix new_matrix(this->rows, this->cols);
+    for (int i=0; i<rows; i++) {
+        for (int j=0; j<cols; j++) {
+            new_matrix(i, j) = this->operator()(i, j) * other(i, j);
+        }
+    }
+    return new_matrix;
 }
 
 Matrix Matrix::add(const Matrix& other) const {
-    throw std::logic_error("add not implemented yet");
+    if (this->cols != other.cols || this->rows != other.rows) {
+        throw std::invalid_argument("Matrix multiply error: Dimensions do not match.");
+    }
+    Matrix new_matrix(this->rows, this->cols);
+    for (int i=0; i<rows; i++) {
+        for (int j=0; j<cols; j++) {
+            new_matrix(i, j) = this->operator()(i, j) + other(i, j);
+        }
+    }
+    return new_matrix;
 }
 
 Matrix Matrix::subtract(const Matrix& other) const {
-    throw std::logic_error("subtract not implemented yet");
+    if (this->cols != other.cols || this->rows != other.rows) {
+        throw std::invalid_argument("Matrix multiply error: Dimensions do not match.");
+    }
+    Matrix new_matrix(this->rows, this->cols);
+    for (int i=0; i<rows; i++) {
+        for (int j=0; j<cols; j++) {
+            new_matrix(i, j) = this->operator()(i, j) - other(i, j);
+        }
+    }
+    return new_matrix;
 }
 
 Matrix Matrix::scalar_multiply(float k) const {
-    throw std::logic_error("scalar_multiply not implemented yet");
+    Matrix new_matrix(this->rows, this->cols);
+    for (int i=0; i<rows; i++) {
+        for (int j=0; j<cols; j++) {
+            new_matrix(i, j) = this->operator()(i, j) * k;
+        }
+    }
+    return new_matrix;
 }
 
 Matrix Matrix::sum(int axis) const {
-    throw std::logic_error("sum not implemented yet");
+    if (axis != 0 && axis != 1) {
+        throw std::invalid_argument("Invalid axis. Axis must be 0 (sum over rows) or 1 (sum over columns).");
+    }
+    Matrix new_matrix(0, this->cols);
+    if (axis==0) {
+        new_matrix = Matrix(1, this->cols);
+    }
+    else {
+        new_matrix = Matrix(this->rows, 1);
+    }
+    for (int i=0; i<new_matrix.rows; i++) { 
+        for (int j=0; j<new_matrix.cols; j++) {
+            if (axis==0) {
+                for (int k=0; k<this->rows; k++) {
+                    new_matrix(i, j) += this->operator()(k, j);
+                }
+            }
+        
+            if (axis==1) {
+                for (int k=0; k<this->cols; k++) {
+                    new_matrix(i, j) += this->operator()(i, k);
+                }
+            }
+        }
+    }
+    return new_matrix;
 }

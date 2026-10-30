@@ -1,3 +1,6 @@
+#ifndef MATRIX_H
+#define MATRIX_H
+
 class Matrix {
 private:
     int rows;
@@ -37,3 +40,5 @@ public:
     // Debugging utility
     void print() const; 
 };
+
+#endif 
